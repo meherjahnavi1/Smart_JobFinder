@@ -1,0 +1,93 @@
+.cvb-login-heading {
+    font-size: 2rem;
+    margin: 0px;
+    color: #4a00e0;
+    width: 360px;
+    text-align: center;
+}
+
+.cvb-login-form{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    color: #4a00e0;
+}
+
+.cvb-login-label{
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #4a00e0;
+}
+
+.cvb-login-input{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    color: #4a00e0;
+}
+
+.cvb-login-input:focus{
+    outline: none;
+    border-color: #5d17e9;
+}
+
+.login-popup-login-button {
+    background: linear-gradient(90deg, #8e2de2, #4a00e0);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-popup-login-button:hover {
+    background-color: #6a21fc;
+}
+
+
+.student-signup-content {
+    margin: 0 auto;
+    padding: 20px;
+    margin-bottom: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    width: 50%;
+    height: 70%;
+    overflow-y: auto;
+  }
+
+  .student-signup-content::-webkit-scrollbar {
+    width: 3px;
+  }
+  
+  .student-signup-content::-webkit-scrollbar-thumb {
+    background-color: #4a00e0;
+    border-radius: 10px;
+  }
+  
+  .student-signup-content::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+  }
+
+  .login-message {
+    font-size: 0.9rem;
+    margin: 0px;
+    color: #1E293B;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+
+  }
+
+  .login-message.success {
+    color: green;
+  }
+  .login-message.error {
+    color: red;
+  }

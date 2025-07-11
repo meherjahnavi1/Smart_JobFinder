@@ -1,0 +1,126 @@
+/* JobFinder Landing Page CSS */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    color: #111827;
+  }
+  
+  nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+    align-items: center;
+    background-color: #fff;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+  }
+  
+  nav ul li {
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4rem 2rem;
+    background-color: #ffffff;
+  }
+  
+  .hero-content {
+    max-width: 50%;
+  }
+  
+  .hero-content h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 1.2;
+  }
+  
+  .hero-content p {
+    font-size: 1.2rem;
+    margin: 1rem 0 2rem;
+    color: #6b7280;
+  }
+  
+  .hero-content .cta {
+    background-color: #3f0d73;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 9999px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .hero-image img {
+    width: 450px;
+    border-radius: 20px;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 3rem 2rem;
+    background-color: #f9fafb;
+  }
+  
+  .stat-item h2 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .stat-item p {
+    color: #6b7280;
+  }
+  
+  .section {
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+  
+  .section h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .section p {
+    color: #6b7280;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .testimonials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+  }
+  
+  .testimonial {
+    padding: 1.5rem;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    font-size: 0.95rem;
+    color: #374151;
+  }
+  
+  footer {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f3f4f6;
+    color: #6b7280;
+  }
+  

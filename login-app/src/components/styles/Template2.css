@@ -1,0 +1,170 @@
+
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.cvb-second-resume-a4 {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 20mm;
+  box-sizing: border-box;
+}
+
+.cvb-second-header {
+  display: flex;
+  align-items: center;
+  background-color: #37474f;
+  color: white;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.cvb-second-profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #ccc;
+  margin-right: 24px;
+  flex-shrink: 0;
+}
+
+.cvb-second-info h1 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+
+.cvb-second-role {
+  font-weight: bold;
+  color: #ff5252;
+  margin: 4px 0;
+}
+
+.cvb-second-desc {
+  margin: 10px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.cvb-second-social {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cvb-second-social span {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #eceff1;
+  padding: 4px 10px;
+  border-radius: 20px;
+  color: #37474f;
+  margin-bottom: 4px;
+}
+
+.cvb-second-content {
+  display: flex;
+  margin-top: 20px;
+}
+
+.cvb-second-left,
+.cvb-second-right {
+  flex: 1;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.cvb-second-left {
+  border-right: 2px solid #eee;
+}
+
+.cvb-second-section-title {
+  background-color: #d32f2f;
+  color: white;
+  padding: 6px 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.cvb-second-left p,
+.cvb-second-right p {
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+strong {
+  color: #000;
+}
+.cvb-second-name {
+  font-size: 36px;
+  font-weight: bold;
+  color: #fff9f9;
+  margin: 0 0 10px;
+}
+
+.cvb-second-basic {
+  font-size: 14px;
+  color: #ffffff;
+  margin: 2px 0;
+}
+
+.cvb-second-desc {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 10px;
+  color: #fcfcfc;
+}
+
+.cvb-second-contact {
+  font-size: 14px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+}
+
+.cvb-second-language {
+  font-size: 14px;
+  color: #333;
+  margin: 2px 0;
+}
+
+.cvb-second-hobby {
+  font-size: 14px;
+  color: #333;
+  margin: 6px 0;
+}
+
+.cvb-second-education,
+.cvb-second-experience {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.cvb-second-skill {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: flex-start;
+}

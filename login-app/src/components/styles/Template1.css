@@ -1,0 +1,134 @@
+.cvb-template1-container {
+  display: flex;
+  flex-direction: column;
+  width: 210mm;
+  height: 297mm;
+  box-sizing: border-box;
+  background-color: #fff;
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  color: #333;
+}
+
+.cvb-template1-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 14%;
+
+  background-size: cover;
+  background-position: center;
+}
+
+.cvb-template1-name-title {
+  background-color: white;
+  padding: 10px;
+  width: 50%;
+  border: 1px solid #ddd;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.cvb-template1-name {
+  font-size: 24px;
+  color: #003366;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.cvb-template1-title {
+  margin: 0;
+  color: #555;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.cvb-template1-content {
+  display: flex;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.cvb-template1-left {
+  width: 60%;
+  padding-right: 20px;
+}
+
+.cvb-template1-right {
+  width: 40%;
+  border-left: 2px solid #ddd;
+  padding-left: 20px;
+}
+
+.cvb-template1-photo img {
+  width: 100px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.cvb-template1-section {
+  margin-bottom: 20px;
+}
+
+.cvb-template1-heading {
+  font-size: 16px;
+  margin-bottom: 6px;
+  margin-top: 0;
+  padding-top: 0;
+  color: #003366;
+}
+
+.cvb-template1-heading.red {
+  background-color: #C77F7F;
+  color: white;
+  padding: 5px 10px;
+  width: fit-content;
+  border-radius: 4px;
+}
+
+.cvb-template1-heading.right {
+  color: #C77F7F;
+  text-align: center;
+  border-bottom: 1px solid #C77F7F;
+  padding: 5px 0;
+  margin-bottom: 10px;
+}
+
+.cvb-template1-section p,
+.cvb-template1-section li {
+  font-size: 12px;
+  margin: 4px 0;
+}
+
+.cvb-template1-section ul {
+  padding-left: 20px;
+  margin: 0;
+  list-style-type: disc;
+}
+
+/* Print styles */
+@media print {
+  .cvb-template1-container {
+    box-shadow: none;
+    border: none;
+  }
+
+  .cvb-template1-header {
+    background-image: none;
+    background-color: #003366;
+    color: white;
+  }
+
+  .cvb-template1-heading.red {
+    background-color: #333 !important;
+  }
+
+  a {
+    color: black;
+    text-decoration: none;
+  }
+}

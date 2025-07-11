@@ -1,0 +1,27 @@
+.cvb-dashboard-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+  background-image: linear-gradient(to right,#0ea2f7, #da5bf3);
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-bottom: 2rem;
+}
+
+.cvb-dashboard-welcome h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+}
+
+.cvb-dashboard-welcome p {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.cvb-dashboard-profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}

@@ -1,0 +1,60 @@
+/* ✅ Professional Design Panel Styling */
+.design-panel {
+    width: 280px;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.08);
+    border-right: 1px solid #e5e7eb;
+    position: absolute;
+    left: 0;
+    top: 70px;
+    bottom: 0;
+    z-index: 1000;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+  }
+  
+  .design-panel h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #1e293b;
+  }
+  
+  .design-panel label {
+    display: block;
+    font-size: 0.95rem;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+  
+  .design-panel input[type="color"],
+  .design-panel select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    margin-bottom: 1.2rem;
+    background: #f9fafb;
+    font-size: 0.95rem;
+    font-family: 'Segoe UI', sans-serif;
+    color: #1e293b;
+  }
+  
+  .toggle-panel-btn {
+    background-color: #1d4ed8;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: auto;
+    transition: background 0.3s ease;
+  }
+  
+  .toggle-panel-btn:hover {
+    background-color: #1e40af;
+  }
+  

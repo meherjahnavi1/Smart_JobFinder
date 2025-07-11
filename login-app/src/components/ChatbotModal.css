@@ -1,0 +1,124 @@
+.chatbot-modal {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 360px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
+  }
+  
+  .chatbot-header {
+    background: #1f1f2e;
+    color: white;
+    padding: 14px 16px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+  }
+  
+  .chat-messages {
+    padding: 12px;
+    overflow-y: auto;
+    max-height: 300px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .message-row {
+    display: flex;
+    align-items: flex-end;
+  }
+  
+  .message-row.bot {
+    justify-content: flex-start;
+  }
+  
+  .message-row.user {
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+  }
+  
+  .chat-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    margin: 0 8px;
+  }
+  
+  .chat-bubble {
+    max-width: 70%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 14px;
+    word-wrap: break-word;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .chat-bubble.bot {
+    background-color: #eef2ff;
+    color: #1f2937;
+    border-bottom-left-radius: 0;
+  }
+  
+  .chat-bubble.user {
+    background-color: #d1fae5;
+    color: #065f46;
+    border-bottom-right-radius: 0;
+  }
+  
+  .timestamp {
+    font-size: 11px;
+    color: #999;
+    margin-top: 4px;
+    text-align: right;
+  }
+  
+  .chat-input-area {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #e5e7eb;
+    padding: 10px;
+  }
+  
+  .chat-input-area input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    color: #1f2937; /* 👈 Add this line */
+    font-size: 14px;
+  }
+  .chat-input-area input::placeholder {
+    color: #9ca3af;
+  }
+  
+  .chat-input-area button {
+    margin-left: 8px;
+    background: #7c3aed;
+    color: rgb(234, 229, 229);
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
