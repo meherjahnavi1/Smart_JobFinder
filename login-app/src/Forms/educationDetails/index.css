@@ -1,0 +1,157 @@
+.cvb-edu-form-container {
+  height: 70vh;
+  padding: 10px;
+  width: 30vw;
+  border-radius: 12px;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.cvb-edu-form-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #4a00e0;
+  text-align: center;
+  margin-bottom: 0px;
+}
+
+.cvb-edu-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.cvb-edu-form::-webkit-scrollbar {
+  display: none;
+}
+
+.cvb-edu-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.cvb-edu-form-group label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.cvb-edu-form-group input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.cvb-edu-form-group textarea {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.cvb-edu-form-group input:focus {
+  border-color: #4a00e0;
+  outline: none;
+}
+
+.cvb-edu-form-group textarea:focus {
+  border-color: #4a00e0;
+  outline: none;
+}
+
+.cvb-edu-form-row {
+  display: flex;
+  align-self: center;
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
+
+
+@media (max-width: 768px) {
+  .cvb-edu-form-row {
+    flex-wrap: wrap;
+  }
+}
+
+.cvb-edu-submit-btn {
+  margin-top: 1rem;
+  padding: 0.8rem 1.2rem;
+  background: linear-gradient(to right, #8e2de2, #4a00e0);
+  border: none;
+  color: white;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+
+.cvb-edu-submit-btn:hover {
+  transform: scale(1.03);
+}
+
+.cvb-edu-form-block {
+  margin-bottom: 1rem;
+}
+
+.cvb-edu-form-block-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4a00e0;
+  margin-bottom: 0px;
+}
+
+.cvb-edu-divider {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 1rem;
+}
+
+.cvb-edu-add-btn {
+  background: none;
+  color: #4a00e0;
+  border: 2px dashed #4a00e0;
+  padding: 0.7rem 1.2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-bottom: 1rem;
+}
+
+.cvb-edu-add-btn:hover {
+  background: #f3ecff;
+}
+
+.cvb-edu-form-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.cvb-edu-remove-btn {
+  background-color: transparent;
+  color: #d32f2f;
+  border: 1px solid #d32f2f;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.cvb-edu-remove-btn:hover {
+  background-color: #ffe6e6;
+}
