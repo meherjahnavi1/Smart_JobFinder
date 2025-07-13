@@ -21,18 +21,18 @@ const ChatbotModal = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
 
   const handleSend = async (text) => {
-    if (!text.trim()) return;
+    if (!text.trim() || loading) return;
 
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
     const userMsg = { type: 'user', text, timestamp: time };
+
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setLoading(true);
 
     try {
       const response = await axios.post(
-        process.env.REACT_APP_OPENAI_API_URL,
+        process.env.REACT_APP_OPENAI_API_URL || 'https://api.openai.com/v1/chat/completions',
         {
           model: 'gpt-3.5-turbo',
           messages: [

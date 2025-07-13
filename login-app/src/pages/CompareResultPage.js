@@ -10,10 +10,8 @@ export default function CompareResultPage() {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  // Read the array you passed under `results`
   const resumeResults = Array.isArray(state?.results) ? state.results : [];
 
-  // State for optimized text and UI
   const [optimizedMap, setOptimizedMap] = useState({});
   const [loadingIdx, setLoadingIdx] = useState(null);
   const [previewIdx, setPreviewIdx] = useState(null);
@@ -52,9 +50,7 @@ export default function CompareResultPage() {
 
   return (
     <div className="compare-result-container">
-      <button className="back-button" onClick={() => navigate('/')}>
-        ← Back to Dashboard
-      </button>
+      <button className="back-button" onClick={() => navigate('/')}>← Back to Dashboard</button>
       <h1 className="page-title">📋 AI Resume vs JD Comparison</h1>
 
       {resumeResults.map((r, i) => {
@@ -62,6 +58,7 @@ export default function CompareResultPage() {
           filename,
           matchedKeywords = [],
           unmatchedKeywords = [],
+          extraKeywords = [],
           matchPercentage = 0,
           originalText = ''
         } = r;
@@ -98,29 +95,28 @@ export default function CompareResultPage() {
                 <div className="panel matched-panel">
                   <h3>✅ Matched Keywords</h3>
                   <div className="pills">
-                    {matchedKeywords.length
-                      ? matchedKeywords.map((kw, k) => (
-                          <span key={k} className="pill">{kw}</span>
-                        ))
-                      : <span className="none-text">None</span>}
+                    {matchedKeywords.length ? matchedKeywords.map((kw, k) => <span key={k} className="pill">{kw}</span>) : <span className="none-text">None</span>}
                   </div>
                 </div>
 
                 <div className="panel unmatched-panel">
-                  <h3>❌ Unmatched Keywords</h3>
+                  <h3>❌ Unmatched Keywords (Missing from Resume)</h3>
                   <div className="pills">
-                    {unmatchedKeywords.length
-                      ? unmatchedKeywords.map((kw, k) => (
-                          <span key={k} className="pill">{kw}</span>
-                        ))
-                      : <span className="none-text">None</span>}
+                    {unmatchedKeywords.length ? unmatchedKeywords.map((kw, k) => <span key={k} className="pill">{kw}</span>) : <span className="none-text">None</span>}
+                  </div>
+                </div>
+
+                <div className="panel extra-panel">
+                  <h3>📌 Extra Technical Skills (Not in JD)</h3>
+                  <div className="pills">
+                    {extraKeywords.length ? extraKeywords.map((kw, k) => <span key={k} className="pill">{kw}</span>) : <span className="none-text">None</span>}
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="suggestions">
-              💡 Consider adding: <strong>{unmatchedKeywords.slice(0,5).join(', ') || '—'}</strong>
+              💡 Consider adding: <strong>{unmatchedKeywords.slice(0, 5).join(', ') || '—'}</strong>
             </div>
 
             <div className="actions">
@@ -148,9 +144,7 @@ export default function CompareResultPage() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>✨ Preview Optimized Resume</h2>
             <pre className="modal-text">{optimizedMap[previewIdx]}</pre>
-            <button className="btn close-btn" onClick={() => setPreviewIdx(null)}>
-              Close
-            </button>
+            <button className="btn close-btn" onClick={() => setPreviewIdx(null)}>Close</button>
           </div>
         </div>
       )}
