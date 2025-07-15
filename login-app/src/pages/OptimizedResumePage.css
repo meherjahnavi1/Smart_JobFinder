@@ -174,3 +174,36 @@
 .download-button:hover {
   background-color: #059669;
 }
+.resume-textarea {
+  width: 100%;
+  min-height: 400px;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fdfdfd;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.edit-button {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-button:hover {
+  background-color: #4338ca;
+}
