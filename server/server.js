@@ -1,147 +1,74 @@
 const express = require('express');
-const multer = require('multer');
 const cors = require('cors');
-const pdfParse = require('pdf-parse');
-const mammoth = require('mammoth');
-const { OpenAI } = require('openai');
-const nlp = require('compromise'); // ✅ NLP Library added
-require('dotenv').config();
+const multer = require('multer');
+const fs = require('fs');
+const pdf = require('pdf-parse');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-
 app.use(cors());
 app.use(express.json());
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const upload = multer({ dest: 'uploads/' });
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
-// Technical keywords to look for
-const technicalKeywords = [
-  'JavaScript', 'Python', 'AWS', 'React', 'Node.js', 'Docker',
-  'Kubernetes', 'CI/CD', 'MongoDB', 'MySQL', 'PostgreSQL',
-  'Terraform', 'Linux', 'Git', 'Jenkins', 'Azure', 'GCP',
-  'HTML', 'CSS', 'TypeScript', 'Express', 'Spring Boot'
-];
-
-// Helpers for parsing files
-function extractTextFromPdf(buffer) {
-  return pdfParse(buffer).then(res => res.text);
+// Helper: Extract text from PDF
+async function extractTextFromPDF(filePath) {
+  const dataBuffer = fs.readFileSync(filePath);
+  const data = await pdf(dataBuffer);
+  return data.text;
 }
 
-function extractTextFromDocx(buffer) {
-  return mammoth.extractRawText({ buffer }).then(res => res.value);
+// Match score calculator
+function calculateMatchPercentage(matched, unmatched) {
+  const total = matched.length + unmatched.length;
+  return total === 0 ? 0 : Math.round((matched.length / total) * 100);
 }
 
-// ✅ NLP-based tokenizer using compromise
-function tokenize(text) {
-  const doc = nlp(text);
-  return doc
-    .terms()
-    .out('array')
-    .map(token => token.toLowerCase())
-    .filter(w => w.length > 2);
-}
-
-// Keep only words in our technicalKeywords list
-function filterTechnicalWords(words) {
-  const kwLower = technicalKeywords.map(k => k.toLowerCase());
-  return words.filter(w => kwLower.includes(w));
-}
-
-// Create optimized resume via OpenAI
-async function generateOptimizedResume(originalText, missingKeywords) {
-  const prompt = `You are a resume optimization assistant. 
-Revise the resume below to naturally include these missing keywords: ${missingKeywords.join(', ')}.
-Keep it professional and well-formatted.
-
----\n${originalText}`;
-
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4',
-    messages: [
-      { role: 'system', content: 'You improve resumes by adding missing ATS keywords.' },
-      { role: 'user', content: prompt }
-    ],
-    max_tokens: 1200
-  });
-
-  return response.choices[0].message.content;
-}
-
-// Compare resumes vs JD
-app.post('/api/compare-resumes', upload.array('resumes'), async (req, res) => {
+// API: Resume optimization by inserting keywords in the Experience section
+app.post('/api/generate-optimized-resume', async (req, res) => {
   try {
-    const jobDescription = req.body.jobDescription || '';
-    const jdTokens = filterTechnicalWords(tokenize(jobDescription));
-    const jdSet = new Set(jdTokens);
+    const { resumeText, unmatchedKeywords } = req.body;
 
-    const results = await Promise.all(
-      req.files.map(async file => {
-        // Extract resume text
-        let resumeText = '';
-        if (file.mimetype === 'application/pdf') {
-          resumeText = await extractTextFromPdf(file.buffer);
-        } else {
-          resumeText = await extractTextFromDocx(file.buffer);
-        }
+    if (!resumeText || !Array.isArray(unmatchedKeywords)) {
+      return res.status(400).json({ error: 'Invalid input data' });
+    }
 
-        // Tokenize & filter
-        const resTokens = filterTechnicalWords(tokenize(resumeText));
-        const resSet = new Set(resTokens);
+    // Find Professional Experience section
+    const expHeader = /PROFESSIONAL EXPERIENCE/i;
+    const expStart = resumeText.search(expHeader);
 
-        // Build matched/unmatched lists
-        const matched = Array.from(jdSet).filter(w => resSet.has(w));
-        const unmatched = Array.from(jdSet).filter(w => !resSet.has(w));
-        const matchPercentage = jdSet.size
-          ? Math.round((matched.length / jdSet.size) * 100)
-          : 0;
+    if (expStart === -1) {
+      return res.status(400).json({ error: 'No PROFESSIONAL EXPERIENCE section found in resume' });
+    }
 
-        return {
-          filename: file.originalname,
-          matchedKeywords: matched,
-          unmatchedKeywords: unmatched,
-          matchPercentage,
-          originalText: resumeText
-        };
-      })
+    const beforeExp = resumeText.substring(0, expStart);
+    const afterExp = resumeText.substring(expStart);
+
+    // Add unmatched keywords into experience as natural sentences
+    const keywordSentences = unmatchedKeywords.map(
+      kw => `• Worked with ${kw} to streamline operations and improve deployment outcomes.`
+    ).join('\n');
+
+    // Add to beginning of PROFESSIONAL EXPERIENCE section
+    const modifiedExperience = afterExp.replace(/(PROFESSIONAL EXPERIENCE\s*\n)/i, `$1${keywordSentences}\n`);
+
+    const optimizedResume = beforeExp + modifiedExperience;
+
+    // Check which unmatched keywords are now included
+    const newlyMatched = unmatchedKeywords.filter(
+      kw => optimizedResume.toLowerCase().includes(kw.toLowerCase())
     );
 
-    res.json(results);
+    const newMatchPercentage = calculateMatchPercentage(newlyMatched, unmatchedKeywords.filter(k => !newlyMatched.includes(k)));
+
+    res.json({ optimizedResume, matchPercentage: newMatchPercentage });
   } catch (err) {
-    console.error('❌ Error in /compare-resumes:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Optimization error:', err.message);
+    res.status(500).json({ error: 'Failed to optimize resume' });
   }
 });
 
-// Generate optimized resume
-app.post('/api/generate-optimized-resume', async (req, res) => {
-  const { resumeText, unmatchedKeywords } = req.body;
-
-  // Validate inputs
-  if (typeof resumeText !== 'string') {
-    return res.status(400).json({ error: 'Missing or invalid resumeText' });
-  }
-  if (!Array.isArray(unmatchedKeywords)) {
-    return res.status(400).json({ error: 'unmatchedKeywords must be an array' });
-  }
-
-  // If nothing is missing, just return the original resume
-  if (unmatchedKeywords.length === 0) {
-    return res.json({ optimizedResume: resumeText });
-  }
-
-  try {
-    const optimized = await generateOptimizedResume(resumeText, unmatchedKeywords);
-    res.json({ optimizedResume: optimized });
-  } catch (err) {
-    console.error('❌ Error in /generate-optimized-resume:', err);
-    res.status(500).json({ error: 'Failed to generate optimized resume' });
-  }
-});
-
+// Start server
+const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });

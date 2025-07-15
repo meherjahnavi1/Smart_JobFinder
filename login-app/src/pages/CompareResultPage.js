@@ -19,9 +19,18 @@ export default function CompareResultPage() {
   const handleOptimize = async (text, unmatched, idx, previewOnly = false) => {
     if (!unmatched.length) {
       setOptimizedMap((prev) => ({ ...prev, [idx]: text }));
-      if (previewOnly) setPreviewIdx(idx);
+      if (previewOnly) {
+        navigate('/optimized-resume', {
+          state: {
+            content: text,
+            matchPercentage: resumeResults[idx]?.matchPercentage || 0,
+            previousState: state
+          }
+        });
+      }
       return;
     }
+
     setLoadingIdx(idx);
     try {
       const { data } = await axios.post(
@@ -29,9 +38,18 @@ export default function CompareResultPage() {
         { resumeText: text, unmatchedKeywords: unmatched }
       );
       setOptimizedMap((prev) => ({ ...prev, [idx]: data.optimizedResume }));
-      if (previewOnly) setPreviewIdx(idx);
-    } catch {
-      alert('Failed to optimize resume');
+
+      if (previewOnly) {
+        navigate('/optimized-resume', {
+          state: {
+            content: data.optimizedResume,
+            matchPercentage: resumeResults[idx]?.matchPercentage || 0,
+            previousState: state
+          }
+        });
+      }
+    } catch (err) {
+      console.error('Optimization failed:', err);
     } finally {
       setLoadingIdx(null);
     }
@@ -138,16 +156,6 @@ export default function CompareResultPage() {
           </div>
         );
       })}
-
-      {previewIdx !== null && (
-        <div className="modal-overlay" onClick={() => setPreviewIdx(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>✨ Preview Optimized Resume</h2>
-            <pre className="modal-text">{optimizedMap[previewIdx]}</pre>
-            <button className="btn close-btn" onClick={() => setPreviewIdx(null)}>Close</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
