@@ -1,0 +1,44 @@
+.template-section {
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .template-title {
+    font-size: 24px;
+    margin-bottom: 1.5rem;
+    color: #5a2ff0;
+  }
+  
+  .template-grid {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .template-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 1rem;
+    width: 220px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .template-card img {
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .upload-resume-button {
+    margin-top: 2rem;
+    padding: 0.7rem 2rem;
+    background-color: #7e3af2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  

@@ -3,6 +3,7 @@ const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs');
 const pdf = require('pdf-parse');
+const mammoth = require('mammoth');
 
 const app = express();
 app.use(cors());
@@ -10,11 +11,24 @@ app.use(express.json());
 
 const upload = multer({ dest: 'uploads/' });
 
-// Helper: Extract text from PDF
-async function extractTextFromPDF(filePath) {
-  const dataBuffer = fs.readFileSync(filePath);
-  const data = await pdf(dataBuffer);
-  return data.text;
+// Helper: Extract text from PDF or DOCX
+async function extractTextFromFile(file) {
+  const filePath = file.path;
+  const mime = file.mimetype;
+
+  if (mime === 'application/pdf') {
+    const dataBuffer = fs.readFileSync(filePath);
+    const data = await pdf(dataBuffer);
+    return data.text;
+  } else if (
+    mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+    mime === 'application/msword'
+  ) {
+    const result = await mammoth.extractRawText({ path: filePath });
+    return result.value;
+  } else {
+    throw new Error('Unsupported file type');
+  }
 }
 
 // Match score calculator
@@ -64,6 +78,52 @@ app.post('/api/generate-optimized-resume', async (req, res) => {
   } catch (err) {
     console.error('Optimization error:', err.message);
     res.status(500).json({ error: 'Failed to optimize resume' });
+  }
+});
+
+// Resume comparison route
+app.post('/api/compare-resumes', upload.array('resumes', 5), async (req, res) => {
+  try {
+    const files = req.files;
+    const jobDescription = req.body.jobDescription;
+
+    if (!files || !files.length || !jobDescription) {
+      return res.status(400).json({ error: 'Missing resumes or job description.' });
+    }
+
+    const jobKeywords = jobDescription
+      .toLowerCase()
+      .match(/\b[a-zA-Z]{2,}\b/g) || [];
+
+    const results = [];
+
+    for (const file of files) {
+      const resumeText = await extractTextFromFile(file);
+      const resumeWords = resumeText.toLowerCase().match(/\b[a-zA-Z]{2,}\b/g) || [];
+
+      const matched = jobKeywords.filter(word => resumeWords.includes(word));
+      const unmatched = jobKeywords.filter(word => !resumeWords.includes(word));
+      const extra = resumeWords.filter(word => !jobKeywords.includes(word));
+
+      const matchPercentage = calculateMatchPercentage(matched, unmatched);
+
+      results.push({
+        filename: file.originalname,
+        matchedKeywords: [...new Set(matched)],
+        unmatchedKeywords: [...new Set(unmatched)],
+        extraKeywords: [...new Set(extra)],
+        matchPercentage,
+        originalText: resumeText
+      });
+
+      // Delete uploaded file
+      fs.unlinkSync(file.path);
+    }
+
+    res.json(results);
+  } catch (err) {
+    console.error('❌ Comparison failed:', err.message);
+    res.status(500).json({ error: 'Internal server error while comparing resumes' });
   }
 });
 
