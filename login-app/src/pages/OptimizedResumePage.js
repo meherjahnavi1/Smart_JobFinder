@@ -1,5 +1,4 @@
-// src/pages/OptimizedResumePage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './OptimizedResumePage.css';
 
@@ -11,10 +10,19 @@ import template4 from '../assets/template4.png';
 const OptimizedResumePage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const [selectedTemplate, setSelectedTemplate] = useState(null); // <-- selection state
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const optimizedContent = state?.content?.trim() || '⚠️ No optimized resume available.';
+  const highlightedContent = state?.highlightedContent?.trim();
   const matchPercentage = state?.matchPercentage || 0;
+  const matchedKeywords = state?.matchedKeywords || [];
+  const unmatchedKeywords = state?.unmatchedKeywords || [];
+
+  useEffect(() => {
+    console.log("✨ Highlighted Resume:", highlightedContent);
+    console.log("✅ Matched Keywords:", matchedKeywords);
+    console.log("❌ Unmatched Keywords:", unmatchedKeywords);
+  }, [highlightedContent, matchedKeywords, unmatchedKeywords]);
 
   const handleBack = () => {
     navigate('/compare-result', {
@@ -45,11 +53,17 @@ const OptimizedResumePage = () => {
         </div>
 
         <div className="resume-box">
-          <textarea
-            readOnly
-            value={optimizedContent}
-            className="resume-textarea"
-          />
+          {highlightedContent ? (
+            <div
+              className="resume-html-output"
+              dangerouslySetInnerHTML={{ __html: highlightedContent }}
+            />
+          ) : (
+            <div className="resume-html-output fallback">
+              <pre>{optimizedContent}</pre>
+              <p className="note-text">⚠️ Highlighted content not available.</p>
+            </div>
+          )}
         </div>
 
         <div className="button-group">
@@ -60,46 +74,46 @@ const OptimizedResumePage = () => {
             ⬇️ Download Optimized Resume
           </button>
         </div>
+
+        <div className="keyword-panels">
+          <div className="panel matched-panel">
+            <h3>✅ Matched Keywords</h3>
+            <div className="pills">
+              {matchedKeywords.length ? matchedKeywords.map((kw, i) => (
+                <span key={i} className="pill">{kw}</span>
+              )) : <span className="none-text">None</span>}
+            </div>
+          </div>
+
+          <div className="panel unmatched-panel">
+            <h3>❌ Unmatched Keywords</h3>
+            <div className="pills">
+              {unmatchedKeywords.length ? unmatchedKeywords.map((kw, i) => (
+                <span key={i} className="pill unmatched">{kw}</span>
+              )) : <span className="none-text">All covered 🎉</span>}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="template-section">
         <h2 className="template-heading">Choose a <span className="highlight">Resume Template</span></h2>
         <div className="template-grid">
-          <div
-            className={`template-card ${selectedTemplate === 'junior' ? 'selected-template' : ''}`}
-            onClick={() => setSelectedTemplate('junior')}
-          >
-            <img src={template1} alt="Junior" className="template-image" />
-            <p className="template-title">Junior</p>
-            <p className="template-description">1–3 years of experience</p>
-          </div>
-
-          <div
-            className={`template-card ${selectedTemplate === 'senior' ? 'selected-template' : ''}`}
-            onClick={() => setSelectedTemplate('senior')}
-          >
-            <img src={template2} alt="Senior" className="template-image" />
-            <p className="template-title">Senior</p>
-            <p className="template-description">3–7+ years of experience</p>
-          </div>
-
-          <div
-            className={`template-card ${selectedTemplate === 'executive' ? 'selected-template' : ''}`}
-            onClick={() => setSelectedTemplate('executive')}
-          >
-            <img src={template3} alt="Executive" className="template-image" />
-            <p className="template-title">Executive</p>
-            <p className="template-description">10+ years of experience</p>
-          </div>
-
-          <div
-            className={`template-card ${selectedTemplate === 'intern' ? 'selected-template' : ''}`}
-            onClick={() => setSelectedTemplate('intern')}
-          >
-            <img src={template4} alt="Intern" className="template-image" />
-            <p className="template-title">Intern</p>
-            <p className="template-description">Entry-level internship</p>
-          </div>
+          {[{ id: 'junior', img: template1, title: 'Junior', desc: '1–3 years' },
+            { id: 'senior', img: template2, title: 'Senior', desc: '3–7+ years' },
+            { id: 'executive', img: template3, title: 'Executive', desc: '10+ years' },
+            { id: 'intern', img: template4, title: 'Intern', desc: 'Entry-level' }]
+            .map(t => (
+              <div
+                key={t.id}
+                className={`template-card ${selectedTemplate === t.id ? 'selected-template' : ''}`}
+                onClick={() => setSelectedTemplate(t.id)}
+              >
+                <img src={t.img} alt={t.title} className="template-image" />
+                <p className="template-title">{t.title}</p>
+                <p className="template-description">{t.desc}</p>
+              </div>
+            ))}
         </div>
       </div>
     </div>

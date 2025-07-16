@@ -28,7 +28,7 @@
     "mammoth": "^1.9.1",
     "multer": "^2.0.1",
     "natural": "^8.1.0",
-    "openai": "^5.5.1",
+    "openai": "^5.10.0",
     "pdf-parse": "^1.1.1",
     "pdfjs-dist": "^3.11.174",
     "react": "^19.1.0",

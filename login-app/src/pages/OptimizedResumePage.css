@@ -194,3 +194,50 @@
   cursor: pointer;
   transform: scale(1.02);
 }
+.resume-html-output {
+  white-space: pre-wrap;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  font-family: monospace;
+  background-color: #fefefe;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+mark {
+  background-color: #fff176;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+.keyword-panels {
+  margin-top: 2rem;
+}
+
+.panel {
+  margin-bottom: 1.5rem;
+}
+
+.panel h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pill {
+  background-color: #e0f7fa;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.pill.unmatched {
+  background-color: #fdecea;
+  color: #b91c1c;
+}
+

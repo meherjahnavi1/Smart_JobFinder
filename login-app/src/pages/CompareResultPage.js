@@ -11,19 +11,24 @@ export default function CompareResultPage() {
   const { state } = useLocation();
 
   const resumeResults = Array.isArray(state?.results) ? state.results : [];
+  const jobDescription = state?.jobDescription || '';
 
   const [optimizedMap, setOptimizedMap] = useState({});
   const [loadingIdx, setLoadingIdx] = useState(null);
-  const [previewIdx, setPreviewIdx] = useState(null);
 
-  const handleOptimize = async (text, unmatched, idx, previewOnly = false) => {
-    if (!unmatched.length) {
-      setOptimizedMap((prev) => ({ ...prev, [idx]: text }));
+  const handleOptimize = async (resumeText, unmatchedKeywords, idx, previewOnly = false) => {
+    if (!unmatchedKeywords.length) {
+      setOptimizedMap((prev) => ({ ...prev, [idx]: resumeText }));
       if (previewOnly) {
         navigate('/optimized-resume', {
           state: {
-            content: text,
+            resumeText,
+            jobDescription,
+            unmatchedKeywords,
             matchPercentage: resumeResults[idx]?.matchPercentage || 0,
+            content: resumeText,
+            highlightedContent: resumeText,
+            insertedKeywords: [],
             previousState: state
           }
         });
@@ -35,15 +40,25 @@ export default function CompareResultPage() {
     try {
       const { data } = await axios.post(
         'http://localhost:3001/api/generate-optimized-resume',
-        { resumeText: text, unmatchedKeywords: unmatched }
+        {
+          resumeText,
+          unmatchedKeywords,
+          jobDescription
+        }
       );
+
       setOptimizedMap((prev) => ({ ...prev, [idx]: data.optimizedResume }));
 
       if (previewOnly) {
         navigate('/optimized-resume', {
           state: {
+            resumeText,
+            jobDescription,
+            unmatchedKeywords,
+            matchPercentage: data.updatedMatchPercentage || resumeResults[idx]?.matchPercentage || 0,
             content: data.optimizedResume,
-            matchPercentage: resumeResults[idx]?.matchPercentage || 0,
+            highlightedContent: data.highlightedResume,
+            insertedKeywords: data.insertedKeywords,
             previousState: state
           }
         });
@@ -113,21 +128,27 @@ export default function CompareResultPage() {
                 <div className="panel matched-panel">
                   <h3>✅ Matched Keywords</h3>
                   <div className="pills">
-                    {matchedKeywords.length ? matchedKeywords.map((kw, k) => <span key={k} className="pill">{kw}</span>) : <span className="none-text">None</span>}
+                    {matchedKeywords.length ? matchedKeywords.map((kw, k) => (
+                      <span key={k} className="pill">{kw}</span>
+                    )) : <span className="none-text">None</span>}
                   </div>
                 </div>
 
                 <div className="panel unmatched-panel">
                   <h3>❌ Unmatched Keywords (Missing from Resume)</h3>
                   <div className="pills">
-                    {unmatchedKeywords.length ? unmatchedKeywords.map((kw, k) => <span key={k} className="pill">{kw}</span>) : <span className="none-text">None</span>}
+                    {unmatchedKeywords.length ? unmatchedKeywords.map((kw, k) => (
+                      <span key={k} className="pill">{kw}</span>
+                    )) : <span className="none-text">None</span>}
                   </div>
                 </div>
 
                 <div className="panel extra-panel">
                   <h3>📌 Extra Technical Skills (Not in JD)</h3>
                   <div className="pills">
-                    {extraKeywords.length ? extraKeywords.map((kw, k) => <span key={k} className="pill">{kw}</span>) : <span className="none-text">None</span>}
+                    {extraKeywords.length ? extraKeywords.map((kw, k) => (
+                      <span key={k} className="pill">{kw}</span>
+                    )) : <span className="none-text">None</span>}
                   </div>
                 </div>
               </div>
