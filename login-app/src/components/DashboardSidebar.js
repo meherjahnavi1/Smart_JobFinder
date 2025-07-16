@@ -9,7 +9,7 @@ function DashboardSidebar() {
   const navItems = [
     { name: 'Dashboard', icon: <FaTachometerAlt />, path: '/dashboard' },
     { name: 'Documents', icon: <FaRegFileAlt />, path: '/documents' },
-    { name: 'Resume Builder', icon: <FaRegComments />, path: '/resume-builder-forms?step=0' }, // ✅ updated path
+    { name: 'Resume Builder', icon: <FaRegComments />, path: 'https://cv-builder.bedatatech.com/' }, // ✅ updated path
     { name: 'Logout', icon: <FaSignOutAlt />, path: '/logout' },
   ];
 

@@ -1,4 +1,5 @@
-import React from 'react';
+// src/pages/OptimizedResumePage.js
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './OptimizedResumePage.css';
 
@@ -10,6 +11,7 @@ import template4 from '../assets/template4.png';
 const OptimizedResumePage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const [selectedTemplate, setSelectedTemplate] = useState(null); // <-- selection state
 
   const optimizedContent = state?.content?.trim() || '⚠️ No optimized resume available.';
   const matchPercentage = state?.matchPercentage || 0;
@@ -23,7 +25,6 @@ const OptimizedResumePage = () => {
   const handleDownload = () => {
     const blob = new Blob([optimizedContent], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-
     const link = document.createElement('a');
     link.href = url;
     link.download = 'Optimized_Resume.txt';
@@ -64,22 +65,37 @@ const OptimizedResumePage = () => {
       <div className="template-section">
         <h2 className="template-heading">Choose a <span className="highlight">Resume Template</span></h2>
         <div className="template-grid">
-          <div className="template-card">
+          <div
+            className={`template-card ${selectedTemplate === 'junior' ? 'selected-template' : ''}`}
+            onClick={() => setSelectedTemplate('junior')}
+          >
             <img src={template1} alt="Junior" className="template-image" />
             <p className="template-title">Junior</p>
             <p className="template-description">1–3 years of experience</p>
           </div>
-          <div className="template-card">
+
+          <div
+            className={`template-card ${selectedTemplate === 'senior' ? 'selected-template' : ''}`}
+            onClick={() => setSelectedTemplate('senior')}
+          >
             <img src={template2} alt="Senior" className="template-image" />
             <p className="template-title">Senior</p>
             <p className="template-description">3–7+ years of experience</p>
           </div>
-          <div className="template-card">
+
+          <div
+            className={`template-card ${selectedTemplate === 'executive' ? 'selected-template' : ''}`}
+            onClick={() => setSelectedTemplate('executive')}
+          >
             <img src={template3} alt="Executive" className="template-image" />
             <p className="template-title">Executive</p>
             <p className="template-description">10+ years of experience</p>
           </div>
-          <div className="template-card">
+
+          <div
+            className={`template-card ${selectedTemplate === 'intern' ? 'selected-template' : ''}`}
+            onClick={() => setSelectedTemplate('intern')}
+          >
             <img src={template4} alt="Intern" className="template-image" />
             <p className="template-title">Intern</p>
             <p className="template-description">Entry-level internship</p>

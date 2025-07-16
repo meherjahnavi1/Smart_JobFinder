@@ -183,3 +183,14 @@
   font-size: 0.9rem;
   color: #6b7280;
 }
+.template-card.selected-template {
+  border: 3px solid #7c3aed;
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+  transform: scale(1.03);
+  transition: all 0.3s ease-in-out;
+}
+
+.template-card:hover {
+  cursor: pointer;
+  transform: scale(1.02);
+}
