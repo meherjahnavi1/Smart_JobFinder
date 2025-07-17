@@ -76,16 +76,7 @@ const OptimizedResumePage = () => {
         </div>
 
         <div className="keyword-panels">
-          <div className="panel matched-panel">
-            <h3>✅ Matched Keywords</h3>
-            <div className="pills">
-              {matchedKeywords.length ? matchedKeywords.map((kw, i) => (
-                <span key={i} className="pill">{kw}</span>
-              )) : <span className="none-text">None</span>}
-            </div>
-          </div>
-
-          <div className="panel unmatched-panel">
+           <div className="panel unmatched-panel">
             <h3>❌ Unmatched Keywords</h3>
             <div className="pills">
               {unmatchedKeywords.length ? unmatchedKeywords.map((kw, i) => (

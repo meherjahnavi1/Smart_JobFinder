@@ -1,13 +1,19 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { FiUpload, FiRefreshCw, FiRepeat } from 'react-icons/fi';
 import Lottie from 'lottie-react';
 import axios from 'axios';
+import mammoth from 'mammoth';
+import * as pdfjsLib from 'pdfjs-dist/build/pdf';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.entry';
 import chatAnimation from '../assets/chat-bot.json';
 import './Dashboard.css';
 import ChatbotModal from '../components/ChatbotModal';
 import DashboardSidebar from '../components/DashboardSidebar';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 export default function Dashboard() {
   const [jobDescription, setJobDescription] = useState('');
@@ -32,26 +38,72 @@ export default function Dashboard() {
     },
   });
 
+  const parsePdfToText = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(item => item.str).join(' ') + ' ';
+    }
+    return text;
+  };
+
+  const parseDocxToText = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const { value } = await mammoth.extractRawText({ arrayBuffer });
+    return value;
+  };
+
+  const extractResumeText = async (file) => {
+    const name = file.name.toLowerCase();
+    if (name.endsWith('.pdf')) return parsePdfToText(file);
+    if (name.endsWith('.docx')) return parseDocxToText(file);
+    return '';
+  };
+
   const handleCompare = async () => {
     if (!jobDescription.trim() || resumeFiles.length === 0) {
       return alert('Please upload at least one resume and enter a job description.');
     }
 
     setLoading(true);
-    const formData = new FormData();
-    resumeFiles.forEach((file) => formData.append('resumes', file));
-    formData.append('jobDescription', jobDescription);
 
     try {
-      const { data } = await axios.post(
-        'http://localhost:3001/api/compare-resumes',
-        formData
+      const parsedResumes = await Promise.all(
+        resumeFiles.map(file => extractResumeText(file))
       );
 
-      // Pass the entire array as `results`
-      navigate('/compare-result', {
-        state: { results: data },
+      const compareResults = await Promise.all(
+        parsedResumes.map(async (resumeText) => {
+          const response = await axios.post('http://localhost:3001/api/compare', {
+            resumeText,
+            jobDescription,
+          });
+
+          return response.data;
+        })
+      );
+
+      const resultWithMetadata = compareResults.map((result, index) => {
+        const total = result.matchedKeywords.length + result.unmatchedKeywords.length;
+        const matchPercentage = total > 0
+          ? Math.round((result.matchedKeywords.length / total) * 100)
+          : 0;
+
+        return {
+          ...result,
+          filename: resumeFiles[index].name,
+          originalText: parsedResumes[index],
+          matchPercentage
+        };
       });
+
+      navigate('/compare-result', {
+        state: { results: resultWithMetadata, jobDescription }
+      });
+
     } catch (err) {
       console.error('❌ Comparison error:', err);
       alert('Failed to compare resumes. Check your server.');
@@ -74,7 +126,6 @@ export default function Dashboard() {
         </p>
 
         <div className="card-grid">
-          {/* Upload */}
           <div className="dashboard-card" {...getRootProps()}>
             <input {...getInputProps()} />
             <FiUpload className="dashboard-icon" />
@@ -98,7 +149,6 @@ export default function Dashboard() {
             </ul>
           </div>
 
-          {/* Job desc */}
           <div className="dashboard-card">
             <FiRefreshCw className="dashboard-icon" />
             <h3>Paste Job Description</h3>
@@ -111,7 +161,6 @@ export default function Dashboard() {
             />
           </div>
 
-          {/* Compare */}
           <div className="dashboard-card">
             <FiRepeat className="dashboard-icon" />
             <h3>Compare</h3>
