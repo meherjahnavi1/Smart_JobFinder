@@ -1,0 +1,48 @@
+.template-library-container {
+    display: flex;
+    padding: 2rem;
+    background: #fff;
+  }
+  
+  .filters {
+    width: 200px;
+    margin-right: 2rem;
+  }
+  
+  .filters h4 {
+    font-weight: bold;
+    margin-top: 1rem;
+  }
+  
+  .filters ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .templates-grid {
+    flex-grow: 1;
+  }
+  
+  .templates-grid .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2rem;
+  }
+  
+  .template-card {
+    border: 1px solid #eaeaea;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .use-btn {
+    margin-top: 1rem;
+    background: #4f46e5;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  

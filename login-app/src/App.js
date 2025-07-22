@@ -2,11 +2,17 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
+
 // Pages and components
 import Documents from './pages/Documents';
 import LoaderPage from './pages/LoaderPage';
+import InterviewBot from './pages/InterviewBot'; // Add this at the top
 import ResumeBuilder from './pages/ResumeBuilder';
+import SeniorTemplateLibrary from './pages/SeniorTemplateLibrary';
+import ExecutiveTemplateLibrary from './pages/ExecutiveTemplateLibrary';
+import InternTemplateLibrary from './pages/InternTemplateLibrary';
 import ResumeUpload from './pages/ResumeUpload';
+import JuniorTemplateLibrary from './pages/JuniorTemplateLibrary';
 import LandingPage from './pages/LandingPage';
 import SearchPage from './pages/SearchPage';
 import AuthPage from './pages/AuthRouter';
@@ -18,12 +24,13 @@ import VerifySuccess from './pages/VerifySuccess';
 import ResetPassword from './pages/ResetPassword';
 import CompareResultPage from './pages/CompareResultPage';
 import OptimizedResumePage from './pages/OptimizedResumePage';
+import InterviewPrepPage from './pages/InterviewPrepPage'; // ✅ New import
 
 // Global styles
 import './index.css';
 import './App.css';
 
-// Motion wrapper
+// Motion wrapper for page transitions
 function SlideWrapper({ children }) {
   return (
     <motion.div
@@ -38,7 +45,7 @@ function SlideWrapper({ children }) {
   );
 }
 
-// 404 fallback
+// 404 fallback page
 function NoMatch() {
   return (
     <div style={{ padding: '50px', textAlign: 'center', fontSize: '1.2em', color: '#555' }}>
@@ -51,7 +58,7 @@ function NoMatch() {
   );
 }
 
-// Route definitions
+// All animated route definitions
 function AnimatedRoutes() {
   const location = useLocation();
 
@@ -64,21 +71,35 @@ function AnimatedRoutes() {
         <Route path="/auth/confirm" element={<SlideWrapper><ConfirmEmail /></SlideWrapper>} />
         <Route path="/auth/*" element={<SlideWrapper><AuthPage /></SlideWrapper>} />
         <Route path="/reset-password" element={<SlideWrapper><ResetPassword /></SlideWrapper>} />
+
+        {/* Resume Templates */}
+        <Route path="/templates/junior" element={<SlideWrapper><JuniorTemplateLibrary /></SlideWrapper>} />
+        <Route path="/templates/senior" element={<SlideWrapper><SeniorTemplateLibrary /></SlideWrapper>} />
+        <Route path="/templates/executive" element={<SlideWrapper><ExecutiveTemplateLibrary /></SlideWrapper>} />
+        <Route path="/templates/intern" element={<SlideWrapper><InternTemplateLibrary /></SlideWrapper>} />
+
+        {/* Core Pages */}
         <Route path="/dashboard" element={<SlideWrapper><Dashboard /></SlideWrapper>} />
         <Route path="/compare-result" element={<SlideWrapper><CompareResultPage /></SlideWrapper>} />
         <Route path="/resume-builder" element={<SlideWrapper><ResumeBuilder /></SlideWrapper>} />
         <Route path="/loading" element={<SlideWrapper><LoaderPage /></SlideWrapper>} />
+        <Route path="/interview-bot" element={<SlideWrapper><InterviewBot /></SlideWrapper>} />
         <Route path="/documents" element={<SlideWrapper><Documents /></SlideWrapper>} />
         <Route path="/verify-success" element={<SlideWrapper><VerifySuccess /></SlideWrapper>} />
         <Route path="/optimized-resume" element={<SlideWrapper><OptimizedResumePage /></SlideWrapper>} />
         <Route path="/forgot-password" element={<SlideWrapper><ForgotPassword /></SlideWrapper>} />
+
+        {/* 🎯 New Interview Prep Page */}
+        <Route path="/interview-prep" element={<SlideWrapper><InterviewPrepPage /></SlideWrapper>} />
+
+        {/* Fallback */}
         <Route path="*" element={<SlideWrapper><NoMatch /></SlideWrapper>} />
       </Routes>
     </AnimatePresence>
   );
 }
 
-// Main app structure
+// App Shell
 function App() {
   return (
     <Router>
@@ -87,10 +108,9 @@ function App() {
   );
 }
 
+// Main Content + Conditional Navbar
 function AppContent() {
   const location = useLocation();
-
-  // ✅ Show Navbar only on the landing page
   const showNavbar = location.pathname === '/';
 
   return (

@@ -1,7 +1,13 @@
 // src/components/DashboardSidebar.js
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaRegFileAlt, FaRegComments, FaSignOutAlt, FaTachometerAlt } from 'react-icons/fa';
+import {
+  FaRegFileAlt,
+  FaRegComments,
+  FaSignOutAlt,
+  FaTachometerAlt,
+  FaBrain
+} from 'react-icons/fa'; // FaBrain for Interview Prep icon
 
 function DashboardSidebar() {
   const location = useLocation();
@@ -9,7 +15,8 @@ function DashboardSidebar() {
   const navItems = [
     { name: 'Dashboard', icon: <FaTachometerAlt />, path: '/dashboard' },
     { name: 'Documents', icon: <FaRegFileAlt />, path: '/documents' },
-    { name: 'Resume Builder', icon: <FaRegComments />, path: 'https://cv-builder.bedatatech.com/' }, // ✅ updated path
+    { name: 'Resume Builder', icon: <FaRegComments />, path: 'https://cv-builder.bedatatech.com/' },
+    { name: 'Interview Prep', icon: <FaBrain />, path: '/interview-prep' }, // ✅ New item
     { name: 'Logout', icon: <FaSignOutAlt />, path: '/logout' },
   ];
 

@@ -21,10 +21,30 @@ const HomePage = () => {
             <div><strong>10,000+</strong><span>Success Stories</span></div>
           </div>
         </div>
+
         <div className="hero-right">
           <img src="/images/woman-laptop-new.png" alt="AI Resume" />
         </div>
       </header>
+
+      {/* ⭐ Accepted by Companies - scroll section */}
+      <div className="accepted-strip">
+        <div className="accepted-title">
+          <span className="gray-star">⭐</span> Accepted by
+        </div>
+        <div className="scroll-wrapper">
+          <div className="scroll-track">
+            {[
+              "Amazon", "Google", "Microsoft", "Meta", "Netflix", "Salesforce",
+              "LinkedIn", "Adobe", "Spotify", "Uber", "Tesla", "Airbnb", "Apple", "Stripe", "Oracle",
+              "Amazon", "Google", "Microsoft", "Meta", "Netflix", "Salesforce",
+              "LinkedIn", "Adobe", "Spotify", "Uber", "Tesla", "Airbnb", "Apple", "Stripe", "Oracle"
+            ].map((company, index) => (
+              <span className="company-pill" key={index}>{company}</span>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Score Comparison Section */}
       <section className="score-section">

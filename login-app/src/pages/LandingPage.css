@@ -1,0 +1,75 @@
+/* LandingPage.css */
+
+.landing-container {
+    scroll-behavior: smooth;
+  }
+  
+  /* Hero section custom padding or animation if needed */
+  .hero-section {
+    padding-bottom: 0;
+  }
+  
+  /* Accepted by Strip */
+  .accepted-strip {
+    background-color: #c1ede7;
+    padding: 1.5rem 1rem;
+    overflow: hidden;
+    position: relative;
+    border-top: 1px solid #b8e0db;
+    border-bottom: 1px solid #b8e0db;
+  }
+  
+  .accepted-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #0f172a;
+    text-align: center;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .accepted-title .gray-star {
+    color: #9ca3af;
+    font-size: 1.3rem;
+  }
+  
+  .scroll-wrapper {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  .scroll-track {
+    display: inline-flex;
+    gap: 1.25rem;
+    animation: scrollLeft 25s linear infinite;
+  }
+  
+  .company-pill {
+    background: #ffffff;
+    color: #1e293b;
+    padding: 0.45rem 1.1rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .company-pill:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to right, #f8fafc, #f0fdfa);
+  }
+  
+  @keyframes scrollLeft {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  
