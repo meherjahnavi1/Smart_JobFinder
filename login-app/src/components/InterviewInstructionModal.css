@@ -1,0 +1,50 @@
+.instruction-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .instruction-modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  }
+  
+  .instruction-modal h2 {
+    margin-bottom: 1rem;
+  }
+  
+  .instruction-modal ul {
+    text-align: left;
+    margin-bottom: 1.5rem;
+  }
+  
+  .modal-buttons button {
+    margin: 0 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .start-btn {
+    background-color: #4a90e2;
+    color: white;
+  }
+  
+  .cancel-btn {
+    background-color: #ccc;
+  }
+  

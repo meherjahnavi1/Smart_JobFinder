@@ -2,11 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
-
 // Pages and components
 import Documents from './pages/Documents';
 import LoaderPage from './pages/LoaderPage';
-import InterviewBot from './pages/InterviewBot'; // Add this at the top
+import InterviewBot from './components/InterviewBot'; // ✅ Corrected path
 import ResumeBuilder from './pages/ResumeBuilder';
 import SeniorTemplateLibrary from './pages/SeniorTemplateLibrary';
 import ExecutiveTemplateLibrary from './pages/ExecutiveTemplateLibrary';
