@@ -82,8 +82,22 @@ A full-stack web app that helps job seekers:
 - dotenv
 
 ---
-<img width="1280" height="757" alt="image" src="https://github.com/user-attachments/assets/ce7f27f0-7d22-4b06-bf8e-325894f93d16" />
 
+<img width="1280" height="757" alt="image" src="https://github.com/user-attachments/assets/ce7f27f0-7d22-4b06-bf8e-325894f93d16" />
+<img width="1280" height="769" alt="image" src="https://github.com/user-attachments/assets/7418b8cf-0b79-49f2-ab5e-1c2a8f1380f0" />
+<img width="2532" height="1461" alt="image" src="https://github.com/user-attachments/assets/fe4897a2-6786-46e6-9ca5-ea718ec4172f" />
+<img width="1280" height="743" alt="image" src="https://github.com/user-attachments/assets/08a782c4-74e4-40d2-ac82-07f6b0b8bf9f" />
+<img width="1280" height="765" alt="image" src="https://github.com/user-attachments/assets/673d417c-0919-4367-9769-79840f6f2005" />
+<img width="1280" height="723" alt="image" src="https://github.com/user-attachments/assets/b8195fa8-ca69-4f60-bdfa-2fa6374b88cb" />
+<img width="1280" height="660" alt="image" src="https://github.com/user-attachments/assets/1a5d8b50-753d-4c04-be87-4c399e0dc70a" />
+<img width="1280" height="654" alt="image" src="https://github.com/user-attachments/assets/22f36373-f9d3-4927-b9c2-a936e232ac06" />
+<img width="1280" height="780" alt="image" src="https://github.com/user-attachments/assets/981512f3-8795-40f2-bca7-801027e13f16" />
+<img width="1280" height="751" alt="image" src="https://github.com/user-attachments/assets/debd44dc-6d4b-4c81-a39e-27ed273813e5" />
+<img width="1600" height="932" alt="image" src="https://github.com/user-attachments/assets/4cef93a4-67f7-4ecb-b7cb-c1bc2e4ff258" />
+<img width="1975" height="1400" alt="image" src="https://github.com/user-attachments/assets/90d7055a-6f63-4f36-b501-ff551a65c41c" />
+<img width="1600" height="958" alt="image" src="https://github.com/user-attachments/assets/dc239996-9346-4a8e-a8a5-5a43f313a5cc" />
+<img width="1600" height="957" alt="image" src="https://github.com/user-attachments/assets/fbb55d97-b6fb-46ec-a911-f47bb49e0881" />
+<img width="1600" height="954" alt="image" src="https://github.com/user-attachments/assets/b15169df-6c4a-464e-9a10-6ebf3f7059e6" />
 
 ##  .env Setup
 
