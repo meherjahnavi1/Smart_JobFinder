@@ -1,3 +1,4 @@
+// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -5,7 +6,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 // Pages and components
 import Documents from './pages/Documents';
 import LoaderPage from './pages/LoaderPage';
-import InterviewBot from './components/InterviewBot'; // ✅ Corrected path
 import ResumeBuilder from './pages/ResumeBuilder';
 import SeniorTemplateLibrary from './pages/SeniorTemplateLibrary';
 import ExecutiveTemplateLibrary from './pages/ExecutiveTemplateLibrary';
@@ -23,13 +23,14 @@ import VerifySuccess from './pages/VerifySuccess';
 import ResetPassword from './pages/ResetPassword';
 import CompareResultPage from './pages/CompareResultPage';
 import OptimizedResumePage from './pages/OptimizedResumePage';
-import InterviewPrepPage from './pages/InterviewPrepPage'; // ✅ New import
+import PrepBotPage from './pages/PrepBotPage';
+import InterviewPrepPage from './pages/InterviewPrepPage';
+import InterviewBot from './components/InterviewBot'; // <-- still import it
 
 // Global styles
 import './index.css';
 import './App.css';
 
-// Motion wrapper for page transitions
 function SlideWrapper({ children }) {
   return (
     <motion.div
@@ -44,7 +45,6 @@ function SlideWrapper({ children }) {
   );
 }
 
-// 404 fallback page
 function NoMatch() {
   return (
     <div style={{ padding: '50px', textAlign: 'center', fontSize: '1.2em', color: '#555' }}>
@@ -57,7 +57,6 @@ function NoMatch() {
   );
 }
 
-// All animated route definitions
 function AnimatedRoutes() {
   const location = useLocation();
 
@@ -82,14 +81,24 @@ function AnimatedRoutes() {
         <Route path="/compare-result" element={<SlideWrapper><CompareResultPage /></SlideWrapper>} />
         <Route path="/resume-builder" element={<SlideWrapper><ResumeBuilder /></SlideWrapper>} />
         <Route path="/loading" element={<SlideWrapper><LoaderPage /></SlideWrapper>} />
-        <Route path="/interview-bot" element={<SlideWrapper><InterviewBot /></SlideWrapper>} />
         <Route path="/documents" element={<SlideWrapper><Documents /></SlideWrapper>} />
+        <Route path="/prep-bot" element={<PrepBotPage />} />
         <Route path="/verify-success" element={<SlideWrapper><VerifySuccess /></SlideWrapper>} />
         <Route path="/optimized-resume" element={<SlideWrapper><OptimizedResumePage /></SlideWrapper>} />
         <Route path="/forgot-password" element={<SlideWrapper><ForgotPassword /></SlideWrapper>} />
 
-        {/* 🎯 New Interview Prep Page */}
+        {/* 🎯 New Interview Prep Pages */}
         <Route path="/interview-prep" element={<SlideWrapper><InterviewPrepPage /></SlideWrapper>} />
+
+        {/* ✅ NO hardcoded props here anymore */}
+        <Route
+          path="/interview-bot"
+          element={
+            <SlideWrapper>
+              <InterviewBot />
+            </SlideWrapper>
+          }
+        />
 
         {/* Fallback */}
         <Route path="*" element={<SlideWrapper><NoMatch /></SlideWrapper>} />
@@ -98,7 +107,6 @@ function AnimatedRoutes() {
   );
 }
 
-// App Shell
 function App() {
   return (
     <Router>
@@ -107,7 +115,6 @@ function App() {
   );
 }
 
-// Main Content + Conditional Navbar
 function AppContent() {
   const location = useLocation();
   const showNavbar = location.pathname === '/';
