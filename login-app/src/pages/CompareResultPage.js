@@ -268,6 +268,47 @@ export default function CompareResultPage() {
                 handleOptimize(resumeText, unmatchedKeywords, extraKeywords, pendingIndex, true);
                 setShowModal(false);
               }}>✅ Confirm</button>
+              <button
+  className="btn preview-btn"
+  onClick={async () => {
+    const resumeText = resumeResults[pendingIndex]?.originalText;
+    const unmatchedKeywords = resumeResults[pendingIndex]?.unmatchedKeywords.filter(k => !(removedMap[pendingIndex] || []).includes(k)) || [];
+    const extraKeywords = resumeResults[pendingIndex]?.extraKeywords.filter(k => !(extraRemovedMap[pendingIndex] || []).includes(k)) || [];
+
+    setShowModal(false); // close modal first
+    setLoadingIdx(pendingIndex); // optionally show spinner
+
+    try {
+      const { data } = await axios.post('http://localhost:3001/api/generate-optimized-resume', {
+        resumeText,
+        unmatchedKeywords,
+        extraKeywords,
+        jobDescription
+      });
+
+      navigate('/optimized-resume', {
+        state: {
+          resumeText,
+          jobDescription,
+          unmatchedKeywords,
+          matchPercentage: data.updatedMatchPercentage || resumeResults[pendingIndex]?.matchPercentage || 0,
+          content: data.optimizedResume,
+          highlightedContent: data.highlightedResume,
+          insertedKeywords: data.insertedKeywords,
+          removedKeywords: data.removedKeywords || [],
+          previousState: state
+        }
+      });
+    } catch (err) {
+      console.error('Failed to optimize resume:', err.message);
+      alert('Something went wrong while generating the optimized resume.');
+    } finally {
+      setLoadingIdx(null);
+    }
+  }}
+>
+  ✅ Confirm
+</button>
             </div>
           </div>
         </div>

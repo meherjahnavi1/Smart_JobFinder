@@ -1,4 +1,3 @@
-// OptimizedResumePage.js
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './OptimizedResumePage.css';
@@ -7,6 +6,8 @@ import template1 from '../assets/template1.png';
 import template2 from '../assets/template2.png';
 import template3 from '../assets/template3.png';
 import template4 from '../assets/template4.png';
+import htmlDocx from 'html-docx-js/dist/html-docx';
+import html2pdf from 'html2pdf.js';
 
 const OptimizedResumePage = () => {
   const { state } = useLocation();
@@ -26,13 +27,7 @@ const OptimizedResumePage = () => {
   const [keywordsAdded, setKeywordsAdded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(originalOptimizedContent);
-
-  useEffect(() => {
-    console.log("✨ Highlighted Resume:", highlightedContent);
-    console.log("✅ Matched Keywords:", matchedKeywords);
-    console.log("❌ Unmatched Keywords:", unmatchedKeywords);
-    console.log("📌 Extra Keywords:", extraKeywords);
-  }, [highlightedContent, matchedKeywords, unmatchedKeywords, extraKeywords]);
+  const [isHighlighted, setIsHighlighted] = useState(false);
 
   const handleBack = () => {
     navigate('/compare-result', {
@@ -52,6 +47,23 @@ const OptimizedResumePage = () => {
     URL.revokeObjectURL(url);
   };
 
+  const handleDownloadWord = () => {
+    const htmlContent = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${resumeContent.replace(/\n/g, '<br>')}</body></html>`;
+    const converted = htmlDocx.asBlob(htmlContent);
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(converted);
+    link.download = 'Optimized_Resume.docx';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleDownloadPDF = () => {
+    const element = document.createElement('div');
+    element.innerHTML = resumeContent.replace(/\n/g, '<br>');
+    html2pdf().set({ filename: 'Optimized_Resume.pdf' }).from(element).save();
+  };
+
   const handleAddKeywords = () => {
     const activeKeywords = unmatchedKeywords.filter(kw => !removedKeywords.includes(kw));
     const activeExtras = extraKeywords.filter(kw => !removedExtras.includes(kw));
@@ -60,7 +72,7 @@ const OptimizedResumePage = () => {
       const appended = `\n\n🔑 Added Keywords for ATS: ${allKeywords.join(', ')}`;
       setResumeContent(resumeContent + appended);
       setEditedContent(editedContent + appended);
-      setCurrentMatch(currentMatch + 10);
+      setCurrentMatch(Math.min(currentMatch + allKeywords.length * 2, 100));
       setKeywordsAdded(true);
     }
   };
@@ -70,22 +82,17 @@ const OptimizedResumePage = () => {
     setEditedContent(originalOptimizedContent);
     setCurrentMatch(state?.matchPercentage || 0);
     setKeywordsAdded(false);
+    setIsHighlighted(false);
   };
 
-  const handleRemoveKeyword = (keyword) => {
-    setRemovedKeywords(prev => [...prev, keyword]);
-  };
-
-  const handleRestoreKeyword = (keyword) => {
-    setRemovedKeywords(prev => prev.filter(k => k !== keyword));
-  };
-
-  const handleRemoveExtra = (keyword) => {
-    setRemovedExtras(prev => [...prev, keyword]);
-  };
-
-  const handleRestoreExtra = (keyword) => {
-    setRemovedExtras(prev => prev.filter(k => k !== keyword));
+  const handleHighlight = () => {
+    let highlighted = editedContent;
+    matchedKeywords.forEach(kw => {
+      const regex = new RegExp(`\\b(${kw})\\b`, 'gi');
+      highlighted = highlighted.replace(regex, '<mark>$1</mark>');
+    });
+    setResumeContent(highlighted);
+    setIsHighlighted(true);
   };
 
   const handleTemplateClick = (templateId) => {
@@ -117,16 +124,13 @@ const OptimizedResumePage = () => {
               onChange={(e) => setEditedContent(e.target.value)}
               rows={20}
             />
-          ) : highlightedContent ? (
+          ) : isHighlighted ? (
             <div
               className="resume-html-output"
-              dangerouslySetInnerHTML={{ __html: highlightedContent }}
+              dangerouslySetInnerHTML={{ __html: resumeContent }}
             />
           ) : (
-            <div className="resume-html-output fallback">
-              <pre>{resumeContent}</pre>
-              <p className="note-text">⚠️ Highlighted content not available.</p>
-            </div>
+            <pre className="resume-html-output">{resumeContent}</pre>
           )}
         </div>
 
@@ -135,32 +139,23 @@ const OptimizedResumePage = () => {
             {isEditing ? '💾 Save' : '✏️ Edit'}
           </button>
           <button className="download-button" onClick={handleDownload}>
-            ⬇️ Download Optimized Resume
+            ⬇️ Download .txt
+          </button>
+          <button className="download-button" onClick={handleDownloadWord}>
+            📄 Download .docx
+          </button>
+          <button className="download-button" onClick={handleDownloadPDF}>
+            📕 Download .pdf
           </button>
         </div>
 
         <div className="button-group" style={{ marginTop: '1rem' }}>
-          <button className="edit-button" onClick={handleAddKeywords} disabled={keywordsAdded}>
-            🔁 Add to Resume
+          <button className="edit-button" onClick={handleHighlight}>
+            🎯 Highlight Keywords
           </button>
           <button className="download-button" onClick={handleUndoKeywords} disabled={!keywordsAdded}>
-            ↩️ Undo Additions
+            ↩️ Undo Highlights
           </button>
-        </div>
-
-        <div className="panel removed-panel">
-          <h3>🗑️ Removed Keywords</h3>
-          <div className="pills">
-            {removedKeywords.length ? (
-              removedKeywords.map((kw, i) => (
-                <span key={i} className="pill removed">
-                  {kw} <button onClick={() => handleRestoreKeyword(kw)}>➕</button>
-                </span>
-              ))
-            ) : (
-              <span className="none-text">None removed</span>
-            )}
-          </div>
         </div>
       </div>
 
