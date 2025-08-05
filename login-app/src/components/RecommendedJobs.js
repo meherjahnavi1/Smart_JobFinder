@@ -1,181 +1,182 @@
 // src/components/RecommendedJobs.js
+import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { FiFilter } from 'react-icons/fi';
+import CompareOptimizeModal from './CompareOptimizeModal';
+import EnhancedFilterDrawer from './EnhancedFilterDrawer';
+import './RecommendedJobs.css';
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { FiFilter } from "react-icons/fi";
-import { IoClose } from "react-icons/io5";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+const dummyJobs = [
+  {
+    job_id: '1',
+    job_title: 'Frontend Developer',
+    employer_name: 'TechCorp',
+    job_description: 'We are looking for a React developer...',
+    matchPercentage: 85,
+    job_type: 'Full-time',
+    experience_level: 'Entry',
+    category: 'Recommended',
+  },
+  {
+    job_id: '2',
+    job_title: 'DevOps Engineer',
+    employer_name: 'Cloud9',
+    job_description: 'AWS, Terraform, CI/CD, and Docker experience required...',
+    matchPercentage: 72,
+    job_type: 'Remote',
+    experience_level: 'Mid',
+    category: 'Liked',
+  },
+  {
+    job_id: '3',
+    job_title: 'Full Stack Developer',
+    employer_name: 'InnovateX',
+    job_description: 'Work with MERN stack to build scalable applications...',
+    matchPercentage: 64,
+    job_type: 'Part-time',
+    experience_level: 'Senior',
+    category: 'Applied',
+  },
+  {
+    job_id: '4',
+    job_title: 'Data Engineer',
+    employer_name: 'DataCorp',
+    job_description: 'Build and maintain data pipelines...',
+    matchPercentage: 78,
+    job_type: 'Hybrid',
+    experience_level: 'Mid',
+    category: 'External',
+  },
+];
 
 const RecommendedJobs = () => {
-  const [jobs, setJobs] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [jobs, setJobs] = useState(dummyJobs);
   const [filters, setFilters] = useState({
-    query: "Data Analyst",
-    job_type: "Full-time",
-    remote: true,
-    onsite: true,
-    hybrid: true,
-    location: "Within US",
+    jobType: 'All',
+    experienceLevel: 'All',
+    activeTab: 'Recommended',
   });
+  const [loadingId, setLoadingId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
 
-  const [resumeFile, setResumeFile] = useState(null);
-  const [parsedSkills, setParsedSkills] = useState([]);
-  const [isParsing, setIsParsing] = useState(false);
+  const toggleFilters = () => setShowFilters(!showFilters);
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const { data } = await axios.get("https://jsearch.p.rapidapi.com/search", {
-          params: { query: filters.query, num_pages: 1 },
-          headers: {
-            "X-RapidAPI-Key": process.env.REACT_APP_RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
-          },
-        });
-        setJobs(data.data || []);
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
-      }
-    };
-
-    fetchJobs();
-  }, [filters]);
-
-  const handleResumeUpload = async (e) => {
-    const file = e.target.files[0];
-    setResumeFile(file);
-    setIsParsing(true);
-
-    const formData = new FormData();
-    formData.append("resume", file);
-
-    try {
-      const { data } = await axios.post("http://localhost:3001/api/parse-resume-text", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      const skills = extractKeywords(data.resumeText);
-      setParsedSkills(skills);
-      toast.success("✅ Resume parsed and keywords extracted!");
-    } catch (err) {
-      console.error("Resume parsing failed:", err);
-      toast.error("❌ Failed to parse resume.");
-    } finally {
-      setIsParsing(false);
-    }
+  const handleSort = () => {
+    const sorted = [...jobs].sort((a, b) => b.matchPercentage - a.matchPercentage);
+    setJobs(sorted);
+    toast.success('Sorted by match percentage');
   };
 
-  const extractKeywords = (text) => {
-    const stopwords = ['the', 'is', 'in', 'with', 'to', 'for', 'a', 'of', 'on', 'and'];
-    const words = text.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
-    return [...new Set(words.filter(w => w.length > 3 && !stopwords.includes(w)))];
+  const handleCustomizeResume = (job) => {
+    setSelectedJob(job);
+    setShowModal(true);
   };
 
-  const getMatchPercentage = (job) => {
-    const jobText = `${job.job_title} ${job.job_description}`.toLowerCase();
-    const matchedSkills = parsedSkills.filter((skill) => jobText.includes(skill));
-    return Math.round((matchedSkills.length / parsedSkills.length) * 100) || 0;
+  const handleCloseModal = () => {
+    setSelectedJob(null);
+    setShowModal(false);
   };
 
-  const sortedJobs = [...jobs].sort((a, b) => {
-    const aMatch = parsedSkills.length ? getMatchPercentage(a) : 0;
-    const bMatch = parsedSkills.length ? getMatchPercentage(b) : 0;
-    return bMatch - aMatch;
+  const handleFilterChange = (field, value) => {
+    setFilters((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const filteredJobs = jobs.filter((job) => {
+    const matchesJobType =
+      filters.jobType === 'All' || job.job_type.toLowerCase() === filters.jobType.toLowerCase();
+    const matchesExperience =
+      filters.experienceLevel === 'All' || job.experience_level.toLowerCase() === filters.experienceLevel.toLowerCase();
+    const matchesTab = job.category === filters.activeTab;
+    return matchesJobType && matchesExperience && matchesTab;
   });
-
-  const filteredJobs = parsedSkills.length
-    ? sortedJobs.filter((job) => getMatchPercentage(job) >= 50)
-    : sortedJobs;
 
   return (
-    <div className="relative">
-      <ToastContainer />
-
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">🎯 Recommended Jobs</h1>
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="bg-green-100 text-green-700 px-4 py-2 rounded-lg flex items-center gap-2"
-        >
-          <FiFilter /> Edit Filters
-        </button>
-      </div>
-
-      {/* Filter Drawer */}
-      <div
-        className={`fixed top-0 right-0 h-full w-96 bg-white shadow-xl p-6 z-50 transform transition-transform duration-300 ease-in-out ${
-          showFilters ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
+    <div className="flex">
+      {/* Main Jobs Area */}
+      <div className="flex-1 p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Filters</h2>
-          <button onClick={() => setShowFilters(false)}>
-            <IoClose size={24} />
-          </button>
+          <h1 className="text-xl font-bold">🎯 Recommended Jobs</h1>
+          <div className="space-x-3">
+            <button
+              onClick={handleSort}
+              className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+            >
+              Sort by Match
+            </button>
+            <button
+              onClick={toggleFilters}
+              className="bg-gray-200 text-gray-800 px-4 py-1 rounded hover:bg-gray-300"
+            >
+              <FiFilter className="inline-block mr-1" />
+              Filters
+            </button>
+          </div>
         </div>
 
-        {/* Upload Resume */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">
-            Upload Resume
-          </h3>
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleResumeUpload}
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            Used to calculate job match %
-          </p>
+        {/* Tabs */}
+        <div className="flex items-center space-x-4 mb-6">
+          {['Recommended', 'Liked', 'Applied', 'External'].map((tab) => (
+            <button
+              key={tab}
+              className={`text-sm font-medium px-3 py-1 rounded-full ${
+                filters.activeTab === tab
+                  ? 'bg-black text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+              onClick={() => setFilters((prev) => ({ ...prev, activeTab: tab }))}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
-      </div>
 
-      {/* Job Cards */}
-      <div className="space-y-6">
-        {isParsing && (
-          <div className="text-sm text-gray-500 mb-4">⏳ Parsing resume...</div>
-        )}
-
-        {filteredJobs.length ? filteredJobs.map((job) => (
+        {filteredJobs.map((job) => (
           <div
             key={job.job_id}
-            className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex justify-between items-start hover:shadow-md transition cursor-pointer"
+            className="border p-4 rounded-lg shadow mb-4 bg-white dark:bg-gray-900"
           >
-            <div className="flex-1 pr-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                {job.job_title}
-              </h3>
-              <p className="text-sm text-gray-500 mb-2">
-                {job.employer_name} / {job.job_city || "Unknown"}
-              </p>
+            <h2 className="text-lg font-semibold">{job.job_title}</h2>
+            <p className="text-sm text-gray-600 mb-1">{job.employer_name}</p>
+            <p className="text-sm text-gray-700 mb-2">
+              {job.job_description.slice(0, 150)}...
+            </p>
 
-              <div className="mb-3">
-                <p className="text-sm font-medium text-green-700 mb-1">
-                  Match: {getMatchPercentage(job)}%
-                </p>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className="bg-green-500 h-2.5 rounded-full transition-all duration-500"
-                    style={{ width: `${getMatchPercentage(job)}%` }}
-                  />
-                </div>
-              </div>
+            <p className="font-medium text-blue-600 mb-2">
+              ✅ Match Score: {job.matchPercentage}%
+            </p>
 
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition"
-                onClick={() => window.open(job.job_apply_link, "_blank")}
-              >
-                APPLY NOW
-              </button>
-            </div>
+            <a
+              href="#"
+              className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 mr-2"
+            >
+              Apply Now
+            </a>
+
+            <button
+              onClick={() => handleCustomizeResume(job)}
+              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition"
+              disabled={loadingId === job.job_id}
+            >
+              {loadingId === job.job_id ? 'Optimizing...' : '🎯 Customize Your Resume for More Score'}
+            </button>
           </div>
-        )) : (
-          <p className="text-gray-500 text-sm italic mt-4">
-            No jobs match your resume above 50%. Try uploading a different resume or adjusting filters.
-          </p>
-        )}
+        ))}
       </div>
+
+      {/* 🔍 Enhanced Filter Drawer */}
+      <EnhancedFilterDrawer
+        showFilters={showFilters}
+        toggleFilters={toggleFilters}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+      />
+
+      {/* 🧠 Modal Popup for Compare & Optimized Resume */}
+      {showModal && selectedJob && (
+        <CompareOptimizeModal job={selectedJob} onClose={handleCloseModal} />
+      )}
     </div>
   );
 };

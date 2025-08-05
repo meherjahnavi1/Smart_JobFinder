@@ -267,8 +267,8 @@ export default function CompareResultPage() {
                 const extraKeywords = resumeResults[pendingIndex]?.extraKeywords.filter(k => !(extraRemovedMap[pendingIndex] || []).includes(k)) || [];
                 handleOptimize(resumeText, unmatchedKeywords, extraKeywords, pendingIndex, true);
                 setShowModal(false);
-              }}>✅ Confirm</button>
-              <button
+              }}
+            
   className="btn preview-btn"
   onClick={async () => {
     const resumeText = resumeResults[pendingIndex]?.originalText;
