@@ -11,7 +11,9 @@ pipeline {
     }
 
     stage('Hello') {
-      steps { hello('Meher') }   // from vars/hello.groovy
+      steps { 
+        hello('Meher')   // from vars/hello.groovy
+      }
     }
 
     stage('Python Setup') {
@@ -42,7 +44,7 @@ pipeline {
   }
 
   post {
-    success { notify("✅ ${env.JOB_NAME} #${env.BUILD_NUMBER} OK") }
-    failure { notify("❌ ${env.JOB_NAME} #${env.BUILD_NUMBER} FAILED") }
+    success { notifySlack("✅ ${env.JOB_NAME} #${env.BUILD_NUMBER} OK") }
+    failure { notifySlack("❌ ${env.JOB_NAME} #${env.BUILD_NUMBER} FAILED") }
   }
 }
