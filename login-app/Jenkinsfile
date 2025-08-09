@@ -1,6 +1,14 @@
 @Library('jenkins-shared-lib') _
 import org.example.Utils
 
+library(
+  identifier: 'jenkins-shared-lib@main',
+  retriever: modernSCM([
+    $class: 'GitSCMSource',
+    remote: 'https://github.com/meherjahnavi1/jenkins-shared-lib.git'
+  ])
+)
+
 pipeline {
   agent any
   options { timestamps() }
@@ -11,15 +19,12 @@ pipeline {
     }
 
     stage('Hello') {
-      steps { 
-        hello('Meher')   // from vars/hello.groovy
-      }
+      steps { hello('Meher') }
     }
 
     stage('Python Setup') {
       steps {
-        // creates .venv, installs requirements.txt if present
-        pythonSetup('requirements.txt')
+        pythonSetup('requirements.txt')   // creates .venv; installs reqs if file exists
       }
     }
 
@@ -44,7 +49,7 @@ pipeline {
   }
 
   post {
-    success { notifySlack("✅ ${env.JOB_NAME} #${env.BUILD_NUMBER} OK") }
-    failure { notifySlack("❌ ${env.JOB_NAME} #${env.BUILD_NUMBER} FAILED") }
+    success { echo "✅ ${env.JOB_NAME} #${env.BUILD_NUMBER} OK" }
+    failure { echo "❌ ${env.JOB_NAME} #${env.BUILD_NUMBER} FAILED" }
   }
 }
