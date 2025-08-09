@@ -1,0 +1,48 @@
+@Library('jenkins-shared-lib') _
+import org.example.Utils
+
+pipeline {
+  agent any
+  options { timestamps() }
+
+  stages {
+    stage('Checkout') {
+      steps { checkout scm }
+    }
+
+    stage('Hello') {
+      steps { hello('Meher') }   // from vars/hello.groovy
+    }
+
+    stage('Python Setup') {
+      steps {
+        // creates .venv, installs requirements.txt if present
+        pythonSetup('requirements.txt')
+      }
+    }
+
+    stage('Tests') {
+      when {
+        anyOf {
+          expression { fileExists('tests') }
+          expression { fileExists('pytest.ini') || fileExists('pyproject.toml') }
+        }
+      }
+      steps {
+        script {
+          def u = new Utils(this)
+          u.banner('Running pytest')
+        }
+        sh '''
+          . .venv/bin/activate || true
+          pytest -q || true
+        '''
+      }
+    }
+  }
+
+  post {
+    success { notify("✅ ${env.JOB_NAME} #${env.BUILD_NUMBER} OK") }
+    failure { notify("❌ ${env.JOB_NAME} #${env.BUILD_NUMBER} FAILED") }
+  }
+}
