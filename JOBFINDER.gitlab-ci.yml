@@ -1,0 +1,89 @@
+stages: [build, publish, deploy]
+
+# -------- GLOBALS (override in CI Variables if you want) --------
+variables:
+  # Nexus you showed (change only if your repo name/path differs)
+  NEXUS_BASE_URL: "http://54.183.218.68:8081/repository/maven-releases-jobfinder"
+  APP_GROUP_PATH: "com/jobfinder"
+  FRONTEND_NAME: "jobfinder-frontend"
+  APP_VERSION: "1.0"
+  # EC2 target (your Jenkins-server / Nginx host)
+  DEPLOY_HOST: "54.183.218.68"
+  DEPLOY_USER: "ubuntu"
+  DEPLOY_PORT: "22"
+
+# You will add these as masked/protected CI/CD variables in GitLab:
+#   NEXUS_USER, NEXUS_PASS, SSH_KEY
+# SSH_KEY must be the private key that can SSH to ubuntu@54.183.218.68.
+
+.before_ssh: &before_ssh
+  - mkdir -p ~/.ssh
+  - echo "$SSH_KEY" > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - ssh -o StrictHostKeyChecking=no -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" 'echo ok'
+
+# ---------- BUILD (Node) ----------
+build:frontend:
+  stage: build
+  image: node:20
+  script:
+    - npm ci
+    - npm run build
+      # If your build output folder is not "dist" or "build", change below line:
+    - OUTDIR=""
+    - if [ -d dist ]; then OUTDIR=dist; elif [ -d build ]; then OUTDIR=build; else echo "Put your build dir name here"; exit 1; fi
+    - (cd "$OUTDIR" && zip -r ../site.zip .)
+    - mv "$OUTDIR/../site.zip" site.zip
+    - ls -lh site.zip
+  artifacts:
+    paths: [site.zip]
+    expire_in: 1 day
+
+# ---------- PUBLISH TO NEXUS ----------
+publish:frontend:
+  stage: publish
+  image: curlimages/curl:8.6.0
+  needs: [build:frontend]
+  script:
+    - REPO_PATH="${APP_GROUP_PATH}/${FRONTEND_NAME}/${APP_VERSION}"
+    - DEST="$NEXUS_BASE_URL/${REPO_PATH}/${FRONTEND_NAME}-${APP_VERSION}.zip"
+    - echo "Uploading to $DEST"
+    - curl -fSL -u "$NEXUS_USER:$NEXUS_PASS" -T site.zip "$DEST"
+
+# ---------- DEPLOY TO EC2 (Nginx) ----------
+deploy:frontend:
+  stage: deploy
+  image: debian:stable-slim
+  needs: [publish:frontend]
+  before_script:
+    - apt-get update && apt-get install -y openssh-client curl unzip
+    - *before_ssh
+  script:
+    - REPO_PATH="${APP_GROUP_PATH}/${FRONTEND_NAME}/${APP_VERSION}"
+    - ART_URL="$NEXUS_BASE_URL/${REPO_PATH}/${FRONTEND_NAME}-${APP_VERSION}.zip"
+    - |
+      ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" bash <<'REMOTE'
+      set -euo pipefail
+      # Ensure nginx + site config exist
+      sudo apt-get update
+      sudo apt-get install -y nginx unzip curl
+      sudo mkdir -p /var/www/jobfinder
+      # Minimal SPA config
+      sudo tee /etc/nginx/sites-available/jobfinder >/dev/null <<'CONF'
+      server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+        server_name _;
+        root /var/www/jobfinder;
+        index index.html;
+        location / { try_files $uri /index.html; }
+      }
+      CONF
+      sudo ln -sf /etc/nginx/sites-available/jobfinder /etc/nginx/sites-enabled/jobfinder
+      sudo rm -f /etc/nginx/sites-enabled/default || true
+      sudo nginx -t
+      REMOTE
+    - |
+      # Pull artifact from Nexus and publish
+      ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
+        "curl -fsSL -u $NEXUS_USER:$NEXUS_PASS $ART_URL -o /tmp/site.zip && sudo unzip -o /tmp/site.zip -d /var/www/jobfinder && sudo systemctl reload nginx && curl -sI http://localhost | head -n1 || true"
